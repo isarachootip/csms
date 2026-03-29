@@ -1,36 +1,23 @@
 <?php
 // ============================================================
-// CSMS Configuration
+// CSMS Configuration — supports ENV variables (Coolify/Docker)
 // ============================================================
 
-// ── Environment: 'local' or 'production'
+// ── Environment: read from ENV var, fallback to 'local'
 define('APP_ENV', getenv('APP_ENV') ?: 'local');
 
-// ── Database (switch between local and Hostinger)
-if (APP_ENV === 'production') {
-    // ✏️  Replace with your Hostinger credentials
-    define('DB_HOST', 'localhost');          // Hostinger uses 'localhost'
-    define('DB_USER', 'u123456_csmsuser');   // ✏️  your DB username
-    define('DB_PASS', 'YourStrongPass!');    // ✏️  your DB password
-    define('DB_NAME', 'u123456_csms');       // ✏️  your DB name
-    define('DB_PORT', 3306);
-} else {
-    // Local XAMPP
-    define('DB_HOST', 'localhost');
-    define('DB_USER', 'root');
-    define('DB_PASS', '');
-    define('DB_NAME', 'csms');
-    define('DB_PORT', 3306);
-}
+// ── Database — reads from ENV (Coolify sets these automatically)
+define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+define('DB_USER', getenv('DB_USER') ?: 'root');
+define('DB_PASS', getenv('DB_PASS') ?: '');
+define('DB_NAME', getenv('DB_NAME') ?: 'csms');
+define('DB_PORT', (int)(getenv('DB_PORT') ?: 3306));
 
-define('APP_NAME', 'CSMS');
+define('APP_NAME',  'CSMS');
 define('APP_TITLE', 'Charging Station Management System');
 
-// ✏️  Change to your Hostinger domain
-define('APP_URL', APP_ENV === 'production'
-    ? 'https://yourdomain.com/csms'     // ✏️  your domain
-    : 'http://localhost/project3/csms'
-);
+// ── App URL — reads from ENV (set in Coolify dashboard)
+define('APP_URL', getenv('APP_URL') ?: 'http://localhost/project3/csms');
 define('APP_VERSION', '1.0.0');
 
 // Session lifetime (seconds)
@@ -39,17 +26,17 @@ define('SESSION_LIFETIME', 3600);
 // OTP settings
 define('OTP_EXPIRY_MINUTES', 10);
 
-// Email (SMTP) — Hostinger provides free email
-define('SMTP_HOST', APP_ENV === 'production' ? 'smtp.hostinger.com' : 'smtp.gmail.com');
-define('SMTP_PORT', 587);
-define('SMTP_USER', APP_ENV === 'production' ? 'noreply@yourdomain.com' : 'no-reply@csms.local'); // ✏️
-define('SMTP_PASS', APP_ENV === 'production' ? 'YourEmailPass!'        : '');                      // ✏️
-define('SMTP_FROM_NAME', 'CSMS System');
+// ── Email SMTP — reads from ENV
+define('SMTP_HOST',      getenv('SMTP_HOST')      ?: 'smtp.gmail.com');
+define('SMTP_PORT',      (int)(getenv('SMTP_PORT') ?: 587));
+define('SMTP_USER',      getenv('SMTP_USER')      ?: 'no-reply@csms.local');
+define('SMTP_PASS',      getenv('SMTP_PASS')      ?: '');
+define('SMTP_FROM_NAME', getenv('SMTP_FROM_NAME') ?: 'CSMS System');
 
 // Timezone
 date_default_timezone_set('Asia/Bangkok');
 
-// Error reporting — hide errors in production
+// Error reporting — hide in production
 if (APP_ENV === 'production') {
     error_reporting(0);
     ini_set('display_errors', 0);

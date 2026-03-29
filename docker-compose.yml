@@ -1,0 +1,76 @@
+# ============================================================
+# CSMS — Docker Compose (สำหรับ local test ก่อน deploy Coolify)
+# ============================================================
+
+version: '3.8'
+
+services:
+  # PHP + Apache App
+  csms_app:
+    build: .
+    container_name: csms_app
+    ports:
+      - "8080:80"
+    environment:
+      - APP_ENV=production
+      - DB_HOST=csms_db
+      - DB_USER=csms_user
+      - DB_PASS=csms_password
+      - DB_NAME=csms
+      - DB_PORT=3306
+      - APP_URL=http://localhost:8080
+    depends_on:
+      csms_db:
+        condition: service_healthy
+    volumes:
+      - ./logs:/var/www/html/logs
+    restart: unless-stopped
+    networks:
+      - csms_network
+
+  # MySQL Database
+  csms_db:
+    image: mysql:8.0
+    container_name: csms_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: csms
+      MYSQL_USER: csms_user
+      MYSQL_PASSWORD: csms_password
+    volumes:
+      - csms_db_data:/var/lib/mysql
+      - ./sql/csms_full_install.sql:/docker-entrypoint-initdb.d/01_schema.sql
+      - ./sql/full_seed.sql:/docker-entrypoint-initdb.d/02_seed.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "csms_user", "-pcsms_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "3307:3306"
+    restart: unless-stopped
+    networks:
+      - csms_network
+
+  # phpMyAdmin (optional — remove in production)
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: csms_phpmyadmin
+    environment:
+      PMA_HOST: csms_db
+      PMA_USER: csms_user
+      PMA_PASSWORD: csms_password
+    ports:
+      - "8081:80"
+    depends_on:
+      - csms_db
+    restart: unless-stopped
+    networks:
+      - csms_network
+
+volumes:
+  csms_db_data:
+
+networks:
+  csms_network:
+    driver: bridge
