@@ -1,4 +1,4 @@
-USE csms;
+USE csms_db;
 
 SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE daily_summary;
