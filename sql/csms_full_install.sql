@@ -1,4 +1,4 @@
-﻿-- MariaDB dump 10.19  Distrib 10.4.32-MariaDB, for Win64 (AMD64)
+-- MariaDB dump 10.19  Distrib 10.4.32-MariaDB, for Win64 (AMD64)
 --
 -- Host: localhost    Database: csms
 -- ------------------------------------------------------
@@ -221,7 +221,7 @@ CREATE TABLE `customers` (
   `email` varchar(150) DEFAULT NULL,
   `license_plate` varchar(30) DEFAULT NULL,
   `car_type_id` int(11) DEFAULT NULL,
-  `member_since` date DEFAULT curdate(),
+  `member_since` date DEFAULT (curdate()),
   `total_sessions` int(11) DEFAULT 0,
   `total_kwh` decimal(12,4) DEFAULT 0.0000,
   `total_spend` decimal(12,2) DEFAULT 0.00,
