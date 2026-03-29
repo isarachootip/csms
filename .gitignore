@@ -1,0 +1,45 @@
+# ============================================================
+# CSMS — .gitignore
+# ============================================================
+
+# Sensitive / dev-only files
+otp_log.txt
+*.log
+.env
+.env.*
+
+# Database exports
+*.sql.bak
+csms_export*.sql
+csms_hostinger*.sql
+
+# Installer (delete after use)
+install.php
+app/includes/app_db_migrate.php
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node (if added later)
+node_modules/
+npm-debug.log
+
+# Composer (if added later)
+vendor/
+composer.lock
+
+# Cache / temp
+*.cache
+/tmp/
+
+# Uploaded files (if added later)
+/uploads/
+/assets/uploads/
